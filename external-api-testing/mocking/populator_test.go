@@ -1,13 +1,14 @@
 package mocking
 
 import (
-	"github.com/golang/mock/gomock"
-	"github.com/lazeratops/go-bucket/external-api-testing/mocking/mocks"
-	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/lazeratops/go-bucket/external-api-testing/mocking/mocks"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetAvailableReleases(t *testing.T) {
