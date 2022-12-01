@@ -52,14 +52,14 @@ func do(inputPath string, elvesToCount int) int {
 		currentRationCals = 0
 		continue
 	}
+	if err := scanner.Err(); err != nil {
+		log.Fatalf("failed to scan input file: %v", err)
+	}
 
 	// Went through all ration groups. Get total.
 	var total int
 	for _, count := range topCalCounts {
 		total += count
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("failed to scan input file: %v", err)
 	}
 	return total
 }
