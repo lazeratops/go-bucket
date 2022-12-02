@@ -13,10 +13,10 @@ const (
 )
 
 const (
-	outcomeUnknown outcome = iota
-	win
-	loss
-	draw
+	outcomeUnknown outcome = -1
+	win                    = 6
+	draw                   = 3
+	loss                   = 0
 )
 
 func keyToAction(key string) action {
@@ -56,19 +56,6 @@ func getOutcome(other action, your action) outcome {
 	return loss
 }
 
-func getScore(yourAction action, yourOutcome outcome) (int, error) {
-	switch yourOutcome {
-	case win:
-		return int(yourAction) + 6, nil
-	case draw:
-		return int(yourAction) + 3, nil
-	case loss:
-		return int(yourAction), nil
-	default:
-		return -1, fmt.Errorf("unrecognized outcome: %d", yourOutcome)
-	}
-}
-
 func playPartOne(other string, you string) (int, error) {
 	oa := keyToAction(other)
 	ya := keyToAction(you)
@@ -78,7 +65,7 @@ func playPartOne(other string, you string) (int, error) {
 	}
 
 	o := getOutcome(oa, ya)
-	return getScore(ya, o)
+	return int(ya) + int(o), nil
 }
 
 func playPartTwo(other string, outcome string) (int, error) {
@@ -89,7 +76,7 @@ func playPartTwo(other string, outcome string) (int, error) {
 	for _, yourAction := range possibleActions {
 		o := getOutcome(otherAction, yourAction)
 		if o == yourOutcome {
-			return getScore(yourAction, yourOutcome)
+			return int(yourAction) + int(yourOutcome), nil
 		}
 	}
 	return -1, fmt.Errorf("failed to find appropriate action for other's move %s and desired outcome %s", other, outcome)
