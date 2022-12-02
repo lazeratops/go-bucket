@@ -74,8 +74,7 @@ func playPartTwo(other string, outcome string) (int, error) {
 
 	possibleActions := []action{rock, paper, scissors}
 	for _, yourAction := range possibleActions {
-		o := getOutcome(otherAction, yourAction)
-		if o == yourOutcome {
+		if getOutcome(otherAction, yourAction) == yourOutcome {
 			return int(yourAction) + int(yourOutcome), nil
 		}
 	}
