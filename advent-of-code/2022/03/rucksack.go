@@ -70,7 +70,6 @@ func getIntersection(groups []string) byte {
 			// If this is not the last group, it has the potential to be
 			// the intersecting char. Set its last seen group idx to this one.
 			charMap[item] = groupIdx
-			continue
 		}
 	}
 	return 0
