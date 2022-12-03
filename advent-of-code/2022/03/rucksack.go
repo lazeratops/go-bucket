@@ -30,6 +30,9 @@ func getCompartments(itemData string, compartmentCount int) []string {
 }
 
 func getIntersection(groups []string) byte {
+
+	// The key of charMap is the char; the value is
+	// the last group idx it was seen in.
 	charMap := make(map[byte]int)
 	groupCount := len(groups)
 
@@ -38,13 +41,11 @@ func getIntersection(groups []string) byte {
 		for i := 0; i < len(groupItems); i += 1 {
 			item := groupItems[i]
 
-			// See if item is already reported
-			// in the char map
+			// Check if item is already reported in the char map
 			lastCharGroupIdx, ok := charMap[item]
 
 			if !ok {
 				// If item is not reported and this is the first group, count it.
-				// The value is the last group it was in.
 				if groupIdx == 0 {
 					charMap[item] = 0
 				}
