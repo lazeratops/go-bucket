@@ -20,7 +20,7 @@ func do(inputPath string) (int, int) {
 
 	for scanner.Scan() {
 		txt := scanner.Text()
-		a, err := getPairAssignments(txt)
+		a, err := getAssignments(txt)
 		if err != nil {
 			log.Fatalf("failed to get pair's assignments: %v", err)
 		}

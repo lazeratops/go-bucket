@@ -35,10 +35,10 @@ func getOverlapKind(a1, a2 assignment) overlapKind {
 	return overlapNone
 }
 
-func getPairAssignments(txt string) ([]assignment, error) {
-	pairs := strings.Split(txt, ",")
+func getAssignments(txt string) ([]assignment, error) {
+	ranges := strings.Split(txt, ",")
 	var assignments []assignment
-	for _, pair := range pairs {
+	for _, pair := range ranges {
 		a, err := getAssignment(pair)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get assignment for pair '%s'", pair)
