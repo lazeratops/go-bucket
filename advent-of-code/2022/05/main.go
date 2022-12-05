@@ -28,11 +28,12 @@ func do(inputPath string) (string, string) {
 			cargo.populateStacks(txt)
 			continue
 		}
+		msg := "failed to move creates with"
 		if err := crane9000.move(txt); err != nil {
-			log.Fatalf("failed to move crates with CrateMover 9000: %v", err)
+			log.Fatalf("%s CrateMover 9000: %v", msg, err)
 		}
 		if err := crane9001.move(txt); err != nil {
-			log.Fatalf("failed to move crates with CrateMover 9001: %v", err)
+			log.Fatalf("%s CrateMover 9001: %v", msg, err)
 		}
 
 	}
