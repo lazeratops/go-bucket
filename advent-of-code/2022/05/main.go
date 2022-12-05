@@ -28,8 +28,12 @@ func do(inputPath string) (string, string) {
 			cargo.populateStacks(txt)
 			continue
 		}
-		crane9000.move(txt)
-		crane9001.move(txt)
+		if err := crane9000.move(txt); err != nil {
+			log.Fatalf("failed to move crates with CrateMover 9000: %v", err)
+		}
+		if err := crane9001.move(txt); err != nil {
+			log.Fatalf("failed to move crates with CrateMover 9001: %v", err)
+		}
 
 	}
 	if err := scanner.Err(); err != nil {
