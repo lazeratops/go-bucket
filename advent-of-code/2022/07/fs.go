@@ -23,6 +23,7 @@ type dir struct {
 }
 
 // fs contains data about all known directories
+// and ability to traverse them.
 type fs struct {
 	currentDir *dir
 	root       *dir
