@@ -15,7 +15,7 @@ func do(inputPath string) (int, int) {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
-	p := newPatch()
+	p := patch{}
 
 	for scanner.Scan() {
 		txt := scanner.Text()
