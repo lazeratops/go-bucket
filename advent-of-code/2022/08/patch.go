@@ -26,7 +26,7 @@ func (p *patch) processRow(line string) error {
 }
 
 // countVisibleTrees() counts all visible trees. It returns
-// the count and the best cenic score
+// the count and the best scenic score
 func (p *patch) countVisibleTrees() (int, int) {
 	rowLen := len(p.trees)
 	bestScenicScore := -1
