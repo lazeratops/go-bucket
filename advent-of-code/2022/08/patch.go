@@ -31,37 +31,11 @@ func (p *patch) processRow(line string) error {
 	return nil
 }
 
-func getWest(loc pos) pos {
-	return pos{
-		x: loc.x - 1,
-		y: loc.y,
-	}
-}
-
-func getEast(loc pos) pos {
-	return pos{
-		x: loc.x + 1,
-		y: loc.y,
-	}
-}
-
-func getNorth(loc pos) pos {
-	return pos{
-		x: loc.x,
-		y: loc.y - 1,
-	}
-}
-
-func getSouth(loc pos) pos {
-	return pos{
-		x: loc.x,
-		y: loc.y + 1,
-	}
-}
-
-func (p *patch) countVisibleTrees() int {
+func (p *patch) countVisibleTrees() (int, int) {
 	// Iterate over each row of trees
 	rowLen := len(p.trees)
+
+	bestScenicScore := -1
 
 	// There are two outer rows
 	visible := len(p.trees) * 2
@@ -71,59 +45,98 @@ func (p *patch) countVisibleTrees() int {
 		row := p.trees[y]
 		// Iterate over each column of heights
 		colLen := len(row)
+
 		for x := 1; x < colLen-1; x += 1 {
 			height := row[x]
 			// For each tree, check all trees in that row and col
-			ox := p.obscuredX(height, x, y)
-			oy := p.obscuredY(height, x, y)
+			ox, ss1 := p.obscuredX(height, x, y)
+			oy, ss2 := p.obscuredY(height, x, y)
+			scenicScore := ss1 * ss2
+			if bestScenicScore < scenicScore {
+				bestScenicScore = scenicScore
+			}
 			if !ox || !oy {
 				visible += 1
 			}
 		}
 	}
-	return visible
+	return visible, bestScenicScore
 }
 
-func (p *patch) obscuredX(height int, x int, y int) bool {
+func (p *patch) obscuredX(height int, x int, y int) (bool, int) {
 	row := p.trees[y]
-	obscuredWest := false
-	obscuredEast := false
-	for otherIdx, otherHeight := range row {
-		if otherIdx == x {
+	obscuredWestIdx := -1
+	obscuredEastIdx := -1
+
+	westScore := 0
+	eastScore := 0
+
+	for otherX, otherHeight := range row {
+		if otherX == x {
 			continue
 		}
-		if otherHeight < height {
+
+		otherObscures := otherHeight >= height
+
+		if otherX < x {
+			if otherObscures {
+				obscuredWestIdx = otherX
+				westScore = 0
+			}
+			westScore += 1
 			continue
 		}
-		if otherIdx < x {
-			obscuredWest = true
-			continue
+
+		if otherObscures && obscuredEastIdx == -1 {
+			obscuredEastIdx = otherX
+			eastScore += 1
 		}
-		if otherIdx > x {
-			obscuredEast = true
+		if obscuredEastIdx == -1 {
+			eastScore += 1
 		}
+
 	}
-	return obscuredWest && obscuredEast
+
+	ow := obscuredWestIdx > -1
+	os := obscuredEastIdx > -1
+	return ow && os, westScore * eastScore
 }
 
-func (p *patch) obscuredY(height int, x int, y int) bool {
-	obscuredNorth := false
-	obscuredSouth := false
+func (p *patch) obscuredY(height int, x int, y int) (bool, int) {
+	obscuredNorthIdx := -1
+	obscuredSouthIdx := -1
+
+	northScore := 0
+	southScore := 0
 
 	// Loop through each row
 	for otherY, row := range p.trees {
-		otherHeight := row[x]
 		if y == otherY {
 			continue
 		}
-		if otherHeight < height {
+
+		otherHeight := row[x]
+		otherObscures := otherHeight >= height
+
+		if otherY < y {
+			if otherObscures {
+				obscuredNorthIdx = otherY
+				northScore = 0
+			}
+			northScore += 1
 			continue
 		}
-		if otherY < y {
-			obscuredNorth = true
-		} else {
-			obscuredSouth = true
+
+		if otherObscures && obscuredSouthIdx == -1 {
+			obscuredSouthIdx = otherY
+			southScore += 1
 		}
+		if obscuredSouthIdx == -1 {
+			southScore += 1
+		}
+
 	}
-	return obscuredNorth && obscuredSouth
+	on := obscuredNorthIdx > -1
+	os := obscuredSouthIdx > -1
+	return on && os, southScore * northScore
 }

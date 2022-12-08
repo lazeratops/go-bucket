@@ -28,9 +28,9 @@ var testData = trees{
 func TestBothParts(t *testing.T) {
 	t.Parallel()
 	path := filepath.Join("testdata", "input.txt")
-	ans1, _ := do(path)
+	ans1, ans2 := do(path)
 	require.Equal(t, 1843, ans1)
-	//	require.Equal(t, 24933642, ans2)
+	require.Equal(t, 180000, ans2)
 }
 
 func TestTotal(t *testing.T) {
@@ -70,7 +70,7 @@ func TestObscuredX(t *testing.T) {
 			p := patch{}
 			p.trees = tc.trees
 			height := tc.trees[0][tc.col]
-			gotObscuredX := p.obscuredX(height, tc.col, 0)
+			gotObscuredX, _ := p.obscuredX(height, tc.col, 0)
 			require.Equal(t, tc.wantObscuredX, gotObscuredX)
 		})
 	}
@@ -121,7 +121,7 @@ func TestObscuredY(t *testing.T) {
 			p.trees = tc.trees
 			height := tc.trees[tc.y][tc.x]
 
-			gotObscuredY := p.obscuredY(height, tc.x, tc.y)
+			gotObscuredY, _ := p.obscuredY(height, tc.x, tc.y)
 			require.Equal(t, tc.wantObscuredY, gotObscuredY)
 		})
 	}
@@ -188,10 +188,10 @@ func TestObscuredXY(t *testing.T) {
 			p := patch{}
 			p.trees = testData
 			height := testData[tc.y][tc.x]
-			gotObscuredX := p.obscuredX(height, tc.x, tc.y)
+			gotObscuredX, _ := p.obscuredX(height, tc.x, tc.y)
 			require.Equal(t, tc.wantObscuredX, gotObscuredX)
 
-			gotObscuredY := p.obscuredY(height, tc.x, tc.y)
+			gotObscuredY, _ := p.obscuredY(height, tc.x, tc.y)
 			require.Equal(t, tc.wantObscuredY, gotObscuredY)
 		})
 	}
@@ -200,6 +200,8 @@ func TestObscuredXY(t *testing.T) {
 func TestTotalVisible(t *testing.T) {
 	p := patch{}
 	p.trees = testData
-	gotTotalVisible := p.countVisibleTrees()
+	gotTotalVisible, gotBestScenicScore := p.countVisibleTrees()
 	require.Equal(t, 21, gotTotalVisible)
+	require.Equal(t, 8, gotBestScenicScore)
+
 }

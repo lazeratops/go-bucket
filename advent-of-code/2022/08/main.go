@@ -26,7 +26,7 @@ func do(inputPath string) (int, int) {
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("failed to scan input file: %v", err)
 	}
-	ans1 := p.countVisibleTrees()
+	ans1, ans2 := p.countVisibleTrees()
 
-	return ans1, -1
+	return ans1, ans2
 }
