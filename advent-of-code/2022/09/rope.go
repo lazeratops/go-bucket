@@ -119,17 +119,16 @@ func (r *rope) movePrev(s *segment) {
 	prev.pos.x += vel.x
 	prev.pos.y += vel.y
 
-	// If the segment we just moved is the tail,
-	// record its visited position
-	if prev.prev == nil {
-		if _, ok := r.tailVisited[prev.pos]; !ok {
-			r.tailVisited[prev.pos] = struct{}{}
-		}
+	if prev.prev != nil {
+		r.movePrev(prev)
 		return
 	}
 
-	// Move the previous segment's previous segment...
-	r.movePrev(prev)
+	// If we get here, the previous segment is the tail.
+	// Record its visited position
+	if _, ok := r.tailVisited[prev.pos]; !ok {
+		r.tailVisited[prev.pos] = struct{}{}
+	}
 }
 
 func (r *rope) totalTailVisited() int {
