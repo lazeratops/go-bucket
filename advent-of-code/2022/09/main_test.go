@@ -10,28 +10,89 @@ import (
 func TestBothParts(t *testing.T) {
 	t.Parallel()
 	path := filepath.Join("testdata", "input.txt")
-	ans1, _ := do(path)
+	ans1, ans2 := do(path)
 	require.Equal(t, 6357, ans1)
-	//require.Equal(t, 180000, ans2)
+	require.Equal(t, 2627, ans2)
 }
 
-func TestTotal(t *testing.T) {
+func TestTotalShort(t *testing.T) {
 	t.Parallel()
 	path := filepath.Join("testdata", "input_test.txt")
-	ans1, _ := do(path)
+	ans1, ans2 := do(path)
 	require.Equal(t, 13, ans1)
-	//require.Equal(t, 180000, ans2)
+	require.Equal(t, 1, ans2)
 }
 
+func TestTotalLong(t *testing.T) {
+	t.Parallel()
+	path := filepath.Join("testdata", "input_long_test.txt")
+	//snapshotPath := filepath.Join("snapshotdata", time.Now().String())
+
+	_, ans2 := do(path)
+	//require.Equal(t, 88, ans1)
+	require.Equal(t, 36, ans2)
+}
+
+func TestIsAdjacent(t *testing.T) {
+	testCases := []struct {
+		pos1         pos
+		pos2         pos
+		wantAdjacent bool
+	}{
+		{
+			pos1: pos{
+				x: 0,
+				y: 0,
+			},
+			pos2: pos{
+				x: 0,
+				y: 1,
+			},
+			wantAdjacent: true,
+		},
+		{
+			pos1: pos{
+				x: 0,
+				y: 0,
+			},
+			pos2: pos{
+				x: 0,
+				y: 2,
+			},
+		},
+		{
+			pos1: pos{
+				x: 0,
+				y: 0,
+			},
+			pos2: pos{
+				x: 1,
+				y: 1,
+			},
+			wantAdjacent: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(fmt.Sprintf("%v-%v", tc.pos1, tc.pos2), func(t *testing.T) {
+			t.Parallel()
+			gotAdjancent := isAdjacent(tc.pos1, tc.pos2)
+			require.Equal(t, tc.wantAdjacent, gotAdjancent)
+		})
+	}
+}
 func TestMoveHead(t *testing.T) {
 	t.Parallel()
 	testCases := []struct {
 		lines       []string
+		length      int
 		wantHeadPos pos
 		wantTailPos pos
 	}{
 		{
-			lines: []string{"R 4"},
+			lines:  []string{"R 4"},
+			length: 1,
 			wantHeadPos: pos{
 				x: 4,
 				y: 0,
@@ -42,7 +103,8 @@ func TestMoveHead(t *testing.T) {
 			},
 		},
 		{
-			lines: []string{"R 4", "U 4", "D 4"},
+			lines:  []string{"R 4", "U 4", "D 4"},
+			length: 1,
 			wantHeadPos: pos{
 				x: 4,
 				y: 0,
@@ -53,7 +115,8 @@ func TestMoveHead(t *testing.T) {
 			},
 		},
 		{
-			lines: []string{"R 4", "U 5", "D 4", "L 1"},
+			lines:  []string{"R 4", "U 5", "D 4", "L 1"},
+			length: 1,
 			wantHeadPos: pos{
 				x: 3,
 				y: -1,
@@ -65,52 +128,11 @@ func TestMoveHead(t *testing.T) {
 		tc := tc
 		t.Run(fmt.Sprintf("%v", tc.lines), func(t *testing.T) {
 			t.Parallel()
-			r := newRope()
+			r := newRope(tc.length)
 			for _, l := range tc.lines {
 				require.NoError(t, r.moveHead(l))
 			}
-			require.Equal(t, tc.wantHeadPos, r.head)
-		})
-	}
-}
-
-func TestGetDistance(t *testing.T) {
-	t.Parallel()
-	testCases := []struct {
-		pos1         pos
-		pos2         pos
-		wantDistance float64
-	}{
-		{
-			pos1: pos{
-				x: 0,
-				y: 0,
-			},
-			pos2: pos{
-				x: 1,
-				y: 0,
-			},
-			wantDistance: 1,
-		},
-		{
-			pos1: pos{
-				x: 0,
-				y: 0,
-			},
-			pos2: pos{
-				x: 2,
-				y: 2,
-			},
-			wantDistance: 3,
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-		t.Run(fmt.Sprintf("%v-%v", tc.pos1, tc.pos2), func(t *testing.T) {
-			t.Parallel()
-			gotDistance := distance(tc.pos1, tc.pos2)
-			require.Equal(t, tc.wantDistance, gotDistance)
+			require.Equal(t, tc.wantHeadPos, r.head.pos)
 		})
 	}
 }

@@ -14,17 +14,21 @@ func do(inputPath string) (int, int) {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
-	r := newRope()
+	shortRope := newRope(1)
+	longRope := newRope(9)
 	for scanner.Scan() {
 		txt := scanner.Text()
-		if err := r.moveHead(txt); err != nil {
+		if err := shortRope.moveHead(txt); err != nil {
+			log.Fatalf("failed to move head: %v", err)
+		}
+		if err := longRope.moveHead(txt); err != nil {
 			log.Fatalf("failed to move head: %v", err)
 		}
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("failed to scan input file: %v", err)
 	}
-	ans1 := r.totalTailVisited()
-
-	return ans1, -1
+	ans1 := shortRope.totalTailVisited()
+	ans2 := longRope.totalTailVisited()
+	return ans1, ans2
 }

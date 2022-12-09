@@ -36,9 +36,9 @@ func TestBothParts(t *testing.T) {
 func TestTotal(t *testing.T) {
 	t.Parallel()
 	path := filepath.Join("testdata", "input_test.txt")
-	ans1, _ := do(path)
+	ans1, ans2 := do(path)
 	require.Equal(t, 21, ans1)
-	//	require.Equal(t, 24933642, ans2)
+	require.Equal(t, 24933642, ans2)
 }
 
 func TestObscuredX(t *testing.T) {
