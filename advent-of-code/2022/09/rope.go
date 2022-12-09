@@ -92,10 +92,6 @@ func (r *rope) moveHead(line string) error {
 
 func (r *rope) movePrev(s *segment) {
 	prev := s.prev
-	// If previous segment does not exist, early out
-	if prev == nil {
-		return
-	}
 
 	vel := pos{}
 	thisPos := s.pos
@@ -125,10 +121,11 @@ func (r *rope) movePrev(s *segment) {
 
 	// If the segment we just moved is the tail,
 	// record its visited position
-	if prev == r.tail {
+	if prev.prev == nil {
 		if _, ok := r.tailVisited[r.tail.pos]; !ok {
 			r.tailVisited[r.tail.pos] = struct{}{}
 		}
+		return
 	}
 
 	// Move the previous segment's previous segment...
