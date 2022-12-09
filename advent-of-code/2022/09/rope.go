@@ -35,7 +35,6 @@ type pos struct {
 }
 
 type segment struct {
-	//	next *segment
 	prev *segment
 	pos  pos
 	id   int
@@ -53,12 +52,13 @@ func newRope(length int) *rope {
 			pos{0, 0}: struct{}{},
 		},
 	}
-	c := r.head
+	s := r.head
+	// Create linked list
 	for i := 0; i < length; i += 1 {
-		c.prev = &segment{id: i}
-		c = c.prev
+		s.prev = &segment{id: i}
+		s = s.prev
 	}
-	r.tail = c
+	r.tail = s
 	return &r
 }
 
@@ -68,18 +68,23 @@ func (r *rope) moveHead(line string) error {
 	if l != 2 {
 		return fmt.Errorf("expected 3 parts, got %d", l)
 	}
+	// First element should be direction
+	// Second element is steps
 	direction := parts[0]
+	steps := parts[1]
 
-	c := parts[1]
-	steps, err := strconv.Atoi(c)
+	stepCount, err := strconv.Atoi(steps)
 	if err != nil {
-		return fmt.Errorf("failed to convert %s to int", c)
+		return fmt.Errorf("failed to convert %s to int", steps)
 	}
 
+	// Get velocity based on direction
 	vel := velocities[direction]
-	for i := 0; i < steps; i += 1 {
+	// Move the head
+	for i := 0; i < stepCount; i += 1 {
 		r.head.pos.x += vel.x
 		r.head.pos.y += vel.y
+		// For each step, move the previous segment
 		r.movePrev(r.head)
 	}
 	return nil
@@ -87,15 +92,17 @@ func (r *rope) moveHead(line string) error {
 
 func (r *rope) movePrev(s *segment) {
 	prev := s.prev
+	// If previous segment does not exist, early out
 	if prev == nil {
 		return
 	}
 
 	vel := pos{}
-	// See where head is in relation to the tail
 	thisPos := s.pos
 	prevPos := prev.pos
 
+	// If previous segment is adjacent to this one,
+	// early out
 	adjacent := isAdjacent(thisPos, prevPos)
 	if adjacent {
 		return
@@ -112,13 +119,19 @@ func (r *rope) movePrev(s *segment) {
 		vel.y = velUp
 	}
 
+	// Move previous segment
 	prev.pos.x += vel.x
 	prev.pos.y += vel.y
+
+	// If the segment we just moved is the tail,
+	// record its visited position
 	if prev == r.tail {
 		if _, ok := r.tailVisited[r.tail.pos]; !ok {
 			r.tailVisited[r.tail.pos] = struct{}{}
 		}
 	}
+
+	// Move the previous segment's previous segment...
 	r.movePrev(prev)
 }
 
