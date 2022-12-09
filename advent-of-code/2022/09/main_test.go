@@ -26,10 +26,9 @@ func TestTotalShort(t *testing.T) {
 func TestTotalLong(t *testing.T) {
 	t.Parallel()
 	path := filepath.Join("testdata", "input_long_test.txt")
-	//snapshotPath := filepath.Join("snapshotdata", time.Now().String())
 
-	_, ans2 := do(path)
-	//require.Equal(t, 88, ans1)
+	ans1, ans2 := do(path)
+	require.Equal(t, 88, ans1)
 	require.Equal(t, 36, ans2)
 }
 

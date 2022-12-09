@@ -7,24 +7,25 @@ import (
 	"strings"
 )
 
-const maxDistance = 1.5
+const (
+	velRight = 1
+	velLeft  = -1
+	velUp    = -1
+	velDown  = 1
+)
 
 var velocities = map[string]pos{
 	"U": {
-		x: 0,
-		y: -1,
+		y: velUp,
 	},
 	"D": {
-		x: 0,
-		y: 1,
+		y: velDown,
 	},
 	"L": {
-		x: -1,
-		y: 0,
+		x: velLeft,
 	},
 	"R": {
-		x: 1,
-		y: 0,
+		x: velRight,
 	},
 }
 
@@ -81,9 +82,6 @@ func (r *rope) moveHead(line string) error {
 		r.head.pos.y += vel.y
 		r.movePrev(r.head)
 	}
-	/* r.head.pos.x += vel.x * steps
-	r.head.pos.y += vel.y * steps
-	r.movePrev(r.head, steps) */
 	return nil
 }
 
@@ -93,7 +91,7 @@ func (r *rope) movePrev(s *segment) {
 		return
 	}
 
-	newVel := pos{}
+	vel := pos{}
 	// See where head is in relation to the tail
 	thisPos := s.pos
 	prevPos := prev.pos
@@ -104,17 +102,18 @@ func (r *rope) movePrev(s *segment) {
 	}
 
 	if thisPos.x > prevPos.x {
-		newVel.x = 1
+		vel.x = velRight
 	} else if thisPos.x < prevPos.x {
-		newVel.x = -1
+		vel.x = velLeft
 	}
 	if thisPos.y > prevPos.y {
-		newVel.y = 1
+		vel.y = velDown
 	} else if thisPos.y < prevPos.y {
-		newVel.y = -1
+		vel.y = velUp
 	}
-	prev.pos.x += newVel.x
-	prev.pos.y += newVel.y
+
+	prev.pos.x += vel.x
+	prev.pos.y += vel.y
 	if prev == r.tail {
 		if _, ok := r.tailVisited[r.tail.pos]; !ok {
 			r.tailVisited[r.tail.pos] = struct{}{}
