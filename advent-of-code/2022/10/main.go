@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func do(inputPath string) (int, int) {
+func do(inputPath string) (int, []string) {
 	file, err := os.Open(inputPath)
 	if err != nil {
 		log.Fatalf("failed to open input file: %v", err)
@@ -22,6 +22,7 @@ func do(inputPath string) (int, int) {
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("failed to scan input file: %v", err)
 	}
+	c.screen.render()
 
-	return c.sigStrTotal, -1
+	return c.sigStrTotal, c.screen.img
 }

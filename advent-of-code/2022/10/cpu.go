@@ -14,15 +14,17 @@ type cpu struct {
 	x           int
 	cycles      int
 	sigStrTotal int
+	screen      *crt
 }
 
 func newCPU() *cpu {
-	return &cpu{x: 1}
+	return &cpu{x: 1, screen: newCRT()}
 }
 
 func (c *cpu) run(line string) error {
 	if line == insNoop {
 		c.updateSigStrength()
+		c.screen.update(c.currentCycle(), c.x)
 		c.cycles += 1
 		return nil
 	}
@@ -38,6 +40,7 @@ func (c *cpu) run(line string) error {
 	}
 	for i := 0; i < 2; i += 1 {
 		c.updateSigStrength()
+		c.screen.update(c.currentCycle(), c.x)
 		c.cycles += 1
 	}
 	c.x += num
