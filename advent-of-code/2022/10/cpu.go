@@ -24,7 +24,7 @@ func newCPU() *cpu {
 func (c *cpu) run(line string) error {
 	if line == insNoop {
 		c.updateSigStrength()
-		c.screen.update(c.currentCycle(), c.x)
+		c.screen.update(c.x)
 		c.cycles += 1
 		return nil
 	}
@@ -40,7 +40,7 @@ func (c *cpu) run(line string) error {
 	}
 	for i := 0; i < 2; i += 1 {
 		c.updateSigStrength()
-		c.screen.update(c.currentCycle(), c.x)
+		c.screen.update(c.x)
 		c.cycles += 1
 	}
 	c.x += num
