@@ -14,15 +14,15 @@ func do(inputPath string) (int, []string) {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
-	c := newCPU()
+	d := newDevice()
 	for scanner.Scan() {
 		txt := scanner.Text()
-		c.run(txt)
+		d.run(txt)
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("failed to scan input file: %v", err)
 	}
-	c.screen.render()
+	d.crt.render()
 
-	return c.sigStrTotal, c.screen.img
+	return d.cpu.sigStrTotal, d.crt.img
 }

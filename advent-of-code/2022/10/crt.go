@@ -21,7 +21,7 @@ func newCRT() *crt {
 	}
 }
 
-func (c *crt) update(register int) {
+func (c *crt) tick(register int) {
 	if c.currentPixel > crtWidth-1 {
 		c.currentPixel = 0
 		c.img = append(c.img, "")
