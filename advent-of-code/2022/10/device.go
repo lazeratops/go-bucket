@@ -19,9 +19,9 @@ func newDevice() *device {
 }
 
 func (c *device) run(line string) error {
+	c.crt.tick(c.cpu.x)
+	c.cpu.tick(0)
 	if line == insNoop {
-		c.cpu.tick(0)
-		c.crt.tick(c.cpu.x)
 		return nil
 	}
 
@@ -36,13 +36,7 @@ func (c *device) run(line string) error {
 		return fmt.Errorf("failed to convert string to int: %s", n)
 	}
 
-	for i := 0; i < addCycles; i += 1 {
-		c.crt.tick(c.cpu.x)
-		if i == addCycles-1 {
-			c.cpu.tick(num)
-			continue
-		}
-		c.cpu.tick(0)
-	}
+	c.crt.tick(c.cpu.x)
+	c.cpu.tick(num)
 	return nil
 }
